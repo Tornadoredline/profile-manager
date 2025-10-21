@@ -32,19 +32,19 @@ class ReminderService {
       console.log('Checking for verification reminders...');
 
       // Find profiles with "pending" status that are older than 12 hours
-      const [profiles] = await db.query(`
-        SELECT p.*, u.username 
-        FROM profiles p
-        INNER JOIN users u ON p.user_id = u.id
-        WHERE p.status = 'pending' 
-        AND p.created_at <= DATE_SUB(NOW(), INTERVAL 12 HOUR)
-        AND NOT EXISTS (
-          SELECT 1 FROM reminders r 
-          WHERE r.profile_id = p.id 
-          AND r.type = 'verification' 
-          AND r.created_at >= DATE_SUB(NOW(), INTERVAL 12 HOUR)
-        )
-      `);
+      const [profiles] = await db.query(
+        `SELECT p.*, u.username 
+         FROM profiles p
+         INNER JOIN users u ON p.user_id = u.id
+         WHERE p.status = 'pending' 
+         AND p.created_at <= DATE_SUB(NOW(), INTERVAL 12 HOUR)
+         AND NOT EXISTS (
+           SELECT 1 FROM reminders r 
+           WHERE r.profile_id = p.id 
+           AND r.type = 'verification' 
+           AND r.created_at >= DATE_SUB(NOW(), INTERVAL 12 HOUR)
+         )`
+      );
 
       for (const profile of profiles) {
         await this.createVerificationReminder(profile);
@@ -71,10 +71,6 @@ class ReminderService {
       );
 
       console.log(`Created verification reminder for profile ${profile.id}`);
-
-      // Here you would typically send real-time notification via Socket.IO
-      // For now, we'll just log it
-      console.log(`Reminder for user ${profile.user_id}: ${message}`);
 
     } catch (error) {
       console.error('Error creating verification reminder:', error);

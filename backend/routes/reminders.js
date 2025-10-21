@@ -10,13 +10,14 @@ const router = express.Router();
 // @access  Private
 router.get('/', authMiddleware, async (req, res) => {
   try {
-    const [reminders] = await db.query(`
-      SELECT r.*, p.site_name, p.status 
-      FROM reminders r
-      LEFT JOIN profiles p ON r.profile_id = p.id
-      WHERE r.user_id = ?
-      ORDER BY r.created_at DESC
-    `, [req.user.id]);
+    const [reminders] = await db.query(
+      `SELECT r.*, p.site_name, p.status 
+       FROM reminders r
+       LEFT JOIN profiles p ON r.profile_id = p.id
+       WHERE r.user_id = ?
+       ORDER BY r.created_at DESC`,
+      [req.user.id]
+    );
 
     res.json(reminders);
   } catch (error) {
@@ -30,13 +31,14 @@ router.get('/', authMiddleware, async (req, res) => {
 // @access  Private
 router.get('/pending', authMiddleware, async (req, res) => {
   try {
-    const [reminders] = await db.query(`
-      SELECT r.*, p.site_name, p.status 
-      FROM reminders r
-      LEFT JOIN profiles p ON r.profile_id = p.id
-      WHERE r.user_id = ? AND r.status = 'pending'
-      ORDER BY r.created_at DESC
-    `, [req.user.id]);
+    const [reminders] = await db.query(
+      `SELECT r.*, p.site_name, p.status 
+       FROM reminders r
+       LEFT JOIN profiles p ON r.profile_id = p.id
+       WHERE r.user_id = ? AND r.status = 'pending'
+       ORDER BY r.created_at DESC`,
+      [req.user.id]
+    );
 
     res.json(reminders);
   } catch (error) {

@@ -43,15 +43,6 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Database connection
-db.connect((err) => {
-  if (err) {
-    console.error('Database connection failed: ' + err.stack);
-    return;
-  }
-  console.log('Connected to MySQL database as id ' + db.threadId);
-});
-
 // Socket.IO for real-time notifications
 io.on('connection', (socket) => {
   console.log('User connected:', socket.id);
