@@ -1,0 +1,19 @@
+{
+  "name": "profile-manager",
+  "version": "2.0.0",
+  "description": "Profile management system with categories and email automation",
+  "scripts": {
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev:backend": "cd backend && npm run dev",
+    "dev:frontend": "cd frontend && npm run dev",
+    "build": "cd frontend && npm run build",
+    "start": "cd backend && npm start",
+    "install:all": "cd backend && npm install && cd ../frontend && npm install"
+  },
+  "devDependencies": {
+    "concurrently": "^7.6.0"
+  },
+  "keywords": ["profile", "manager", "react", "nodejs", "mysql"],
+  "author": "Profile Manager Team",
+  "license": "MIT"
+}

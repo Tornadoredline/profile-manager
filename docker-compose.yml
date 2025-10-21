@@ -1,0 +1,59 @@
+version: '3.8'
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: profile_manager_mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: profile_manager
+      MYSQL_USER: app_user
+      MYSQL_PASSWORD: app_password
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./database/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql
+      - ./database/seeds.sql:/docker-entrypoint-initdb.d/02-seeds.sql
+    networks:
+      - profile_manager_network
+
+  backend:
+    build: 
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: profile_manager_backend
+    ports:
+      - "3001:3001"
+    environment:
+      - DB_HOST=mysql
+      - DB_PORT=3306
+      - DB_USER=root
+      - DB_PASSWORD=root
+      - DB_NAME=profile_manager
+      - JWT_SECRET=your-jwt-secret
+      - NODE_ENV=production
+    depends_on:
+      - mysql
+    networks:
+      - profile_manager_network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: profile_manager_frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - VITE_API_URL=http://localhost:3001
+    depends_on:
+      - backend
+    networks:
+      - profile_manager_network
+
+volumes:
+  mysql_data:
+
+networks:
+  profile_manager_network:
+    driver: bridge
